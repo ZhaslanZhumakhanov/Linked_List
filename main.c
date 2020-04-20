@@ -46,9 +46,9 @@ int main(void) {
     AssertEq(2,GetAt(list,0),"RemoveAt_2");
     //RemoveAt(list,2); //Выход за границы списка
     int x=Pop(list); // ([2])
-    AssertEq(1,x,"Pop_1");
+    AssertEq(1,x,"Pop");
     x=Dequeue(list);
-    AssertEq(2,x,"Pop_1");
+    AssertEq(2,x,"Dequeue");
     DestroyList(list);
     //AssertEq(0,Length(list),"Deque and Destroy"); Нахождение длины несуществующего списка
 }
