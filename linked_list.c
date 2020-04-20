@@ -49,6 +49,7 @@ void Append(List *this, int value) {
 void Prepend(List *this, int value) {
     Node *tmp=malloc(sizeof(Node));
     tmp->value=value;
+    tmp->next=NULL;
     if (this->head==NULL){
         this->head=tmp;
         this->tail=tmp;
@@ -59,36 +60,90 @@ void Prepend(List *this, int value) {
     }
 }
 void AppendAll(List *this, const List *that) {
-    if (that->head==NULL){ return;}
-    if (this->head==NULL) {
-        this->head=that->head;
-        this->tail=that->tail;
-    }
-    else{
-        this->tail->next=that->head;
-        this->tail=that->tail;
+    for (int i=0; i<Length(that);i++) {
+        Append(this,GetAt(that,i));
     }
 }
 void InsertAt(List *this, int index, int value) {
-    //TODO: напиши меня!
+    if (index<0 || index>=Length(this)){
+        exit(-1);
+    }
+    Node* tmp=this->head;
+    for (int i=0; i<index; i++){
+        tmp=tmp->next;
+    }
+    Node* that=malloc(sizeof(Node));
+    that->value=value;
+    that->next=tmp->next;
+    tmp->next=that;
+    if (index==(Length(this)-2)){
+        this->tail=that;
+    }
 }
 
 void RemoveAt(List *this, int index) {
-    //TODO: напиши меня!
+    Node* tmp=this->head;
+    if (index==0){
+        this->head=this->head->next;
+        tmp->next=NULL;
+        free(tmp);
+        return;
+    }
+    for (int i=0; i<index-1; i++){
+        tmp=tmp->next;
+    }
+    Node* tmp2=tmp->next;
+    tmp->next=tmp2->next;
+    free(tmp2);
+    if (index==Length(this)){
+        this->tail=tmp;
+    }
 }
 void RemoveAll(List *this) {
-    //TODO: напиши меня!
+    Node* tmp=this->head;
+    for (int i=0; i<Length(this)-1;i++){
+        tmp=tmp->next;
+        free(this->head);
+        this->head=tmp;
+    }
+    this->tail=NULL;
+    this->head=NULL;
+    free(tmp);
 }
 
 int Pop(List *this) {
-    //TODO: напиши меня!
+    if (Length(this)==0){
+        exit(-1);
+    }
+    int value=this->tail->value;
+    Node* tmp=this->head;
+    for (int i=0; i<Length(this)-2; i++){
+        tmp=tmp->next;
+    }
+    free(this->tail);
+    tmp->next=NULL;
+    this->tail=tmp;
+    return value;
 }
+
 int Dequeue(List *this) {
-    //TODO: напиши меня!
+    if (this->head==NULL){
+        exit(-1);
+    }
+    int value=this->head->value;
+    Node* tmp=this->head->next;
+    free(this->head);
+    this->head=tmp;
+    if (Length(this)==1){
+        this->tail=tmp;
+    }
+    return value;
 }
 
 int Length(const List *this) {
-    if (this->head==NULL){ return 0;}
+    if (this->head==NULL){
+        return 0;
+    }
     Node* tmp=this->head;
     int count=0;
     while (tmp!=NULL){
@@ -99,7 +154,9 @@ int Length(const List *this) {
 }
 
 int GetAt(const List *this, int index) {
-    if (this->head==NULL || index>=Length(this)) {exit(-1);}
+    if (this->head==NULL || index>=Length(this)) {
+        exit(-1);
+    }
     Node* tmp=this->head;
     for (int i=0; i<index; i++) {
         tmp = tmp->next;
